@@ -1,8 +1,11 @@
 package com.emove.emove.activities
 
+import android.app.Activity
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import com.emove.emove.R
+import com.emove.emove.fragments.StartTripFragment
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -36,12 +39,16 @@ class ChooseLocationActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
-        // Add a marker in Sydney and move the camera
         val emag = LatLng(44.489118, 26.125265)
         mMap.moveCamera(CameraUpdateFactory.newLatLng(emag))
+        mMap.animateCamera(CameraUpdateFactory.zoomTo( 12.0f ))
 
         googleMap.setOnMapLongClickListener { latLng ->
-            setResult()
+            val intent = Intent()
+            intent.putExtra(StartTripFragment.LAT, latLng.latitude)
+            intent.putExtra(StartTripFragment.LNG, latLng.longitude)
+            setResult(Activity.RESULT_OK, intent)
             finish()
         }
+    }
 }

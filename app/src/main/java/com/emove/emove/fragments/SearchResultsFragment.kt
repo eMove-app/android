@@ -33,11 +33,11 @@ class SearchResultsFragment @SuppressLint("ValidFragment") constructor
 
     override fun onResume() {
         super.onResume()
+        rv_search_results.layoutManager = LinearLayoutManager(context)
         findRide()
     }
 
     private fun setupList(searchResults: List<SearchResult>) {
-        rv_search_results.layoutManager = LinearLayoutManager(context)
         rv_search_results.adapter = SearchResultsAdapter(searchResults, listener = object: SearchResultsAdapter.SearchResultsListener {
             override fun onItemSelected(searchResult: SearchResult) {
                 StorageController.saveLastSearchResult(searchResult)

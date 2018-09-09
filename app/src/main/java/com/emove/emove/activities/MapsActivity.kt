@@ -72,10 +72,10 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
-//        // Add a marker in Sydney and move the camera
-//        val sydney = LatLng(-34.0, 151.0)
-//        mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-//        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+        val emag = LatLng(44.489118, 26.125265)
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(emag))
+        mMap.animateCamera(CameraUpdateFactory.zoomTo( 12.0f ))
+
         val lastSearchResult = StorageController.getLastSearchResult()
         lastSearchResult?. let { drawResult(googleMap, it) }
     }
@@ -88,7 +88,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val overview_polyline_initial = searchResult.initial.directions.overview_polyline
         overview_polyline_initial?.let { addPath(googleMap, PolyUtil.decode(overview_polyline_initial.points), null) }
 
-        val overview_polyline_updated = searchResult.initial.directions.overview_polyline
+        val overview_polyline_updated = searchResult.updated.directions.overview_polyline
         overview_polyline_updated?.let { addPath(googleMap, PolyUtil.decode(overview_polyline_updated.points), Arrays.asList(GAP, DOT)) }
 
     }
@@ -111,7 +111,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         val padding = 100 // padding around start and end marker
         val cu = CameraUpdateFactory.newLatLngBounds(bounds, padding)
-        googleMap.animateCamera(cu)
+//        googleMap.animateCamera(cu)
     }
 
     fun setupLocation() {

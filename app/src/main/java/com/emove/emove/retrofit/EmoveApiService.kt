@@ -28,9 +28,12 @@ interface EmoveApiService {
 //    fun updateAddressesUserInfo(@Field("token") token: String): Call<LoginResponse>
 
     @POST("rides/action/start")
-    fun startTrip(@Header("x-token") token: String, @Body body: StartTripBody): Call<ResponseBody>
+    fun startTrip(@Header("x-token") token: String, @Body body: StartTripBody): Call<SearchResultsResponse>
 
     @GET("find-ride")
     fun findTrip(@Header("x-token") token: String, @Query("lat") lat: Double, @Query("lng") lng: Double): Call<SearchResultsResponse>
+
+    @GET("rides/{" + "id" + "}")
+    fun getTrip(@Header("x-token") token: String, @Path("id") id: Int): Call<GetTripResponse>
 
 }

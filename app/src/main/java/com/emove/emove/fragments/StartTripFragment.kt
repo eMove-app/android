@@ -19,13 +19,23 @@ import retrofit2.Callback
 import retrofit2.Response
 import android.content.Intent
 import com.emove.emove.activities.ChooseLocationActivity
+import com.emove.emove.activities.MapsActivity
+import com.emove.emove.model.SearchResultsResponse
+import com.emove.emove.storage.InMemoryStorage
+import com.google.android.gms.maps.model.LatLng
 
 
 @SuppressLint("ValidFragment")
 class StartTripFragment @SuppressLint("ValidFragment") constructor
 (fragmentCallbacks: FragmentCallbacks) : BaseFragment(fragmentCallbacks) {
 
-    val GET_LOCATION = 1
+    val GET_LOCATION_HOME = 1
+    val GET_LOCATION_WORK = 2
+
+    companion object {
+        val LAT = "lat"
+        val LNG = "lng"
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -40,23 +50,29 @@ class StartTripFragment @SuppressLint("ValidFragment") constructor
 
     private fun setupActions() {
         bt_start.setOnClickListener { view -> startTrip() }
+        et_starting_position.setOnClickListener { _ -> startActivityForResult(Intent(context, ChooseLocationActivity::class.java), GET_LOCATION_HOME) }
+        et_destination.setOnClickListener { _ -> startActivityForResult(Intent(context, ChooseLocationActivity::class.java), GET_LOCATION_WORK) }
     }
 
     private fun getStartTripBody(): StartTripBody {
-        return StartTripBody(Position(44.489163, 26.125570), Position(44.428907, 26.104237), "9:00:00")
+        return StartTripBody(Position(InMemoryStorage.lastWorkSaved!!.latitude, InMemoryStorage.lastWorkSaved!!.longitude), Position(InMemoryStorage.lastWorkSaved!!.latitude, InMemoryStorage.lastWorkSaved!!.longitude), "9:00:00")
     }
 
     private fun startTrip() {
         val token = StorageController.readToken(context!!)
         token?.let {
             showLoading()
-            EmoveApi.instance.startTrip(it, getStartTripBody()).enqueue(object: Callback<ResponseBody> {
+            EmoveApi.instance.startTrip(it, getStartTripBody()).enqueue(object: Callback<SearchResultsResponse> {
 
-                override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                override fun onResponse(call: Call<SearchResultsResponse>, response: Response<SearchResultsResponse>) {
+                    response.body()?.let {
+                        StorageController.saveLastSearchResult(it.data[0])
+                        startActivity(Intent(context, MapsActivity::class.java))
+                    }
                     hideLoading()
-                    startActivityForResult(Intent(context, ChooseLocationActivity::class.java), GET_LOCATION)
+
                 }
-                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                override fun onFailure(call: Call<SearchResultsResponse>, t: Throwable) {
                     hideLoading()
                 }
             })
@@ -65,9 +81,25 @@ class StartTripFragment @SuppressLint("ValidFragment") constructor
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         // Check which request we're responding to
-        if (requestCode == GET_LOCATION) {
+        if (requestCode == GET_LOCATION_HOME) {
             if (resultCode == Activity.RESULT_OK) {
-
+                data?.let {
+                    val lat = data.getDoubleExtra(LAT, 0.0)
+                    val lng = data.getDoubleExtra(LNG, 0.0)
+                    if (lat != null && lng != null) {
+                        InMemoryStorage.lastHomeSaved = LatLng(lat, lng)
+                    }
+                }
+            }
+        } else if (requestCode == GET_LOCATION_WORK) {
+            if (resultCode == Activity.RESULT_OK) {
+                data?.let {
+                    val lat = data.getDoubleExtra(LAT, 0.0)
+                    val lng = data.getDoubleExtra(LNG, 0.0)
+                    if (lat != null && lng != null) {
+                        InMemoryStorage.lastWorkSaved = LatLng(lat, lng)
+                    }
+                }
             }
         }
     }
