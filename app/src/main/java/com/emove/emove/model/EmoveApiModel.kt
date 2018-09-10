@@ -14,4 +14,4 @@ data class GetTripData(val directions: Directions, val points: List<UserPoint>)
 
 data class UserPoint(val lat: Double, val lng: Double, val user: User)
 
-data class SearchResult(val initial: Trip, val updated: Trip, val user: User)
+data class SearchResult(val initial: Trip, val updated: Trip, val user: User, val points: List<UserPoint>, val eta: Int)

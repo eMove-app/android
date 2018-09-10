@@ -13,6 +13,7 @@ import com.emove.emove.adapters.SearchResultsAdapter
 import com.emove.emove.model.SearchResult
 import com.emove.emove.model.SearchResultsResponse
 import com.emove.emove.retrofit.EmoveApi
+import com.emove.emove.storage.InMemoryStorage
 import com.emove.emove.storage.StorageController
 import kotlinx.android.synthetic.main.fragment_search_results.*
 import okhttp3.ResponseBody
@@ -50,7 +51,13 @@ class SearchResultsFragment @SuppressLint("ValidFragment") constructor
         val token = StorageController.readToken(context!!)
         token?.let {
             showLoading()
-            EmoveApi.instance.findTrip(it, 44.458561, 26.110557).enqueue(object: Callback<SearchResultsResponse> {
+            var lat = 44.458561
+            var lng = 26.110557
+            InMemoryStorage.lastDestinationSaved?.let {
+                lat = it.latitude
+                lng = it.longitude
+            }
+            EmoveApi.instance.findTrip(it, lat, lng).enqueue(object: Callback<SearchResultsResponse> {
 
                 override fun onResponse(call: Call<SearchResultsResponse>, response: Response<SearchResultsResponse>) {
                     hideLoading()

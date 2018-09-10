@@ -24,6 +24,7 @@ class SearchResultsAdapter(val items: List<SearchResult>, val listener: SearchRe
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(item: SearchResult, listener: SearchResultsListener) = with(itemView) {
             tv_name.text = item.user.name
+            tv_eta.text = (item.eta / 60).toString() + " min"
             Glide.with(this).load(item.user.profile_picture_url).into(iv_picture);
             tv_details.setOnClickListener { listener.onItemSelected(item) }
         }

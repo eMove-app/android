@@ -29,12 +29,11 @@ import com.google.android.gms.maps.model.LatLng
 class StartTripFragment @SuppressLint("ValidFragment") constructor
 (fragmentCallbacks: FragmentCallbacks) : BaseFragment(fragmentCallbacks) {
 
-    val GET_LOCATION_HOME = 1
-    val GET_LOCATION_WORK = 2
-
     companion object {
         val LAT = "lat"
         val LNG = "lng"
+        val GET_LOCATION_HOME = 1
+        val GET_LOCATION_WORK = 2
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

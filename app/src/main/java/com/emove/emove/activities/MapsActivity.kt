@@ -12,20 +12,16 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.PolylineOptions
-import com.google.android.gms.maps.model.LatLngBounds
 import android.support.v4.app.ActivityCompat
 import android.content.pm.PackageManager
 import com.emove.emove.model.SearchResult
+import com.emove.emove.model.UserPoint
 import com.emove.emove.storage.StorageController
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.maps.model.*
 import com.google.maps.android.PolyUtil
-import com.google.android.gms.maps.model.Gap
-import com.google.android.gms.maps.model.PatternItem
-import com.google.android.gms.maps.model.Dot
 import java.util.*
 
 
@@ -84,6 +80,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
     private val GAP = Gap(20f)
 
     fun drawResult(googleMap: GoogleMap, searchResult: SearchResult) {
+
+        searchResult.points?.forEach { userPoint: UserPoint ->
+            val latLng = LatLng(userPoint.lat, userPoint.lng)
+            val markerOptions = MarkerOptions()
+            markerOptions.position(latLng);
+            googleMap.addMarker(markerOptions)
+        }
 
         val overview_polyline_initial = searchResult.initial.directions.overview_polyline
         overview_polyline_initial?.let { addPath(googleMap, PolyUtil.decode(overview_polyline_initial.points), null) }

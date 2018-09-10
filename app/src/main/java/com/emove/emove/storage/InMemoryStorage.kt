@@ -9,4 +9,5 @@ object InMemoryStorage {
     var searchResult: SearchResult? = null
     var lastHomeSaved: LatLng? = null
     var lastWorkSaved: LatLng? = null
+    var lastDestinationSaved: LatLng? = null
 }

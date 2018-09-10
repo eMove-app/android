@@ -35,6 +35,15 @@
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="15dp"
                         android:layout_toRightOf="@+id/iv_picture" />
+
+                <TextView
+                        android:id="@+id/tv_eta"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="15dp"
+                        android:layout_alignParentRight="true" />
+
             </RelativeLayout>
 
             <View
